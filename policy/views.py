@@ -1,5 +1,6 @@
 # from rest_framework import viewsets
 from collections import defaultdict
+import itertools
 
 from rest_framework import views
 from rest_framework.metadata import BaseMetadata
@@ -17,10 +18,10 @@ class MinimalMetadata(BaseMetadata):
         )
         serializer = PolicySerializer()
         fields = defaultdict(dict)
-        for k, v in serializer.fields.items():
-            for f in desired_fields:
-                if hasattr(v, f):
-                    fields[k][f] = getattr(v, f)
+        for serializer_fields, desired in itertools.product(serializer.fields.items(), desired_fields):
+            name, attrs = serializer_fields
+            if hasattr(attrs, desired):
+                fields[name][desired] = getattr(attrs, desired)
         return {
             "type": view.get_view_name(),
             "fields": fields
