@@ -1,13 +1,25 @@
 # from rest_framework import viewsets
 from rest_framework import views
+from rest_framework.metadata import BaseMetadata
 from rest_framework.response import Response
 
 from policy.serializers import PolicySerializer
 
 
+class MinimalMetadata(BaseMetadata):
+
+    def determine_metadata(self, request, view):
+        serializer = PolicySerializer()
+        return {
+            "type": view.get_view_name(),
+            "attributes": serializer.data,
+        }
+
+
 class PolicyView(views.APIView):
 
     resource_name = 'policy'
+    metadata_class = MinimalMetadata
 
     def post(self, request, format=None):
         serializer = PolicySerializer(data=request.data)
