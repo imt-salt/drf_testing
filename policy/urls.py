@@ -11,5 +11,5 @@ from policy import views
 # urlpatterns = router.urls
 
 urlpatterns = [
-    url(r'^policy', views.PolicyView.as_view()),
+    url(r'^policy', views.PolicyView.as_view(), name='policy'),
 ]
