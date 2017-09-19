@@ -12,7 +12,7 @@ class MinimalMetadata(BaseMetadata):
         serializer = PolicySerializer()
         return {
             "type": view.get_view_name(),
-            "attributes": serializer.data,
+            "fields": {k: str(v) for k, v in serializer.fields.items()}
         }
 
 
