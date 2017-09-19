@@ -10,9 +10,21 @@ class MinimalMetadata(BaseMetadata):
 
     def determine_metadata(self, request, view):
         serializer = PolicySerializer()
+        fields = {}
+        for k, v in serializer.fields.items():
+            fields[k] = {
+                'type': str(type(v)),
+                'name': v.field_name,
+                'allow_blank': getattr(v, 'allow_blank', 'N/A'),
+                'allow_null': v.allow_null,
+                'label': v.label,
+                'required': v.required,
+                'read_only': v.read_only
+            }
         return {
             "type": view.get_view_name(),
-            "fields": {k: str(v) for k, v in serializer.fields.items()}
+            # "fields": {k: str(v) for k, v in serializer.fields.items()}
+            "fields": fields
         }
 
 
