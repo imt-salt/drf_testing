@@ -40,3 +40,10 @@ class SerializerTest(TestCase):
         response_json = response.json()
         self.assertTrue(response_json['data']['error'])
         self.assertEqual(response_json['data']['errors'], expected)
+
+    def test_options_returns_types_and_attributes(self):
+        url = reverse('policy:policy')
+        response = self.client.options(url, content_type='application/vnd.api+json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        expected = {'data': {'type': 'Policy', 'attributes': {'policy_number': ''}}}
+        self.assertEqual(response.json(), expected)
