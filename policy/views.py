@@ -1,4 +1,6 @@
 # from rest_framework import viewsets
+from collections import defaultdict
+
 from rest_framework import views
 from rest_framework.metadata import BaseMetadata
 from rest_framework.response import Response
@@ -9,21 +11,18 @@ from policy.serializers import PolicySerializer
 class MinimalMetadata(BaseMetadata):
 
     def determine_metadata(self, request, view):
+        desired_fields = (
+            'type', 'name', 'allow_blank', 'allow_null', 'label',
+            'required', 'read_only', 'max_length'
+        )
         serializer = PolicySerializer()
-        fields = {}
+        fields = defaultdict(dict)
         for k, v in serializer.fields.items():
-            fields[k] = {
-                'type': str(type(v)),
-                'name': v.field_name,
-                'allow_blank': getattr(v, 'allow_blank', 'N/A'),
-                'allow_null': v.allow_null,
-                'label': v.label,
-                'required': v.required,
-                'read_only': v.read_only
-            }
+            for f in desired_fields:
+                if hasattr(v, f):
+                    fields[k][f] = getattr(v, f)
         return {
             "type": view.get_view_name(),
-            # "fields": {k: str(v) for k, v in serializer.fields.items()}
             "fields": fields
         }
 
@@ -43,3 +42,8 @@ class PolicyView(views.APIView):
                 "errors": serializer.errors,
             }
             return Response(data)
+
+    def get(self, request, **kwargs):
+        meta = self.metadata_class()
+        data = meta.determine_metadata(request, self)
+        return Response(data)

@@ -45,5 +45,25 @@ class SerializerTest(TestCase):
         url = reverse('policy:policy')
         response = self.client.options(url, content_type='application/vnd.api+json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        expected = {'data': {'type': 'Policy', 'attributes': {'policy_number': ''}}}
-        self.assertEqual(response.json(), expected)
+        expected = '''{
+            "data": {
+                "type": "Policy",
+                "fields": {
+                    "id": {
+                        "label": "Id",
+                        "read_only": true,
+                        "allow_null": false,
+                        "required": false
+                    },
+                    "policy_number": {
+                        "max_length": 10,
+                        "allow_null": false,
+                        "required": true,
+                        "label": "Policy number",
+                        "allow_blank": false,
+                        "read_only": false
+                    }
+                }
+            }
+        }'''
+        self.assertEqual(response.json(), json.loads(expected))
