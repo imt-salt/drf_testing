@@ -67,3 +67,40 @@ class SerializerTest(TestCase):
             }
         }'''
         self.assertEqual(response.json(), json.loads(expected))
+
+    def test_x(self):
+        data = {
+            "data": {
+                "type": "policy",
+                "id": 1,
+                "attributes": {
+                    "policy_number": "123456"
+                },
+                "relationships": {
+                    "coverages": {
+                        "data": [
+                            {
+                                "type": "coverage",
+                                "id": 23,
+                            }
+                        ]
+                    }
+                }
+            },
+            "included": [
+                {
+                    "type": "coverage",
+                    "id": 23,
+                    "attributes": {
+                        "liability": False,
+                        "coverage_type": "Awesome"
+                    }
+                }
+            ]
+        }
+        url = reverse('policy:policy')
+        response = self.client.post(url, data=json.dumps(data), content_type='application/vnd.api+json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # print(response.data)
+        print(json.dumps(data))
+        self.fail('x')
