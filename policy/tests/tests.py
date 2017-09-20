@@ -100,7 +100,7 @@ class SerializerTest(TestCase):
         }
         url = reverse('policy:policy')
         response = self.client.post(url, data=json.dumps(data), content_type='application/vnd.api+json')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        # print(response.data)
-        print(json.dumps(data))
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        print(response.data)
+        # print(json.dumps(data))
         self.fail('x')
