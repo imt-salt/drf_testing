@@ -12,4 +12,6 @@ from policy import views
 
 urlpatterns = [
     url(r'^policy', views.PolicyView.as_view(), name='policy'),
+    url(r'policy/(?P<pk>[^/.]+)/relationships/(?P<related_field>[^/.]+)$', view=views.CoverageView.as_view(), name='policy_relationships'),
+    url(r'^coverage', views.CoverageView.as_view(), name='policy-coverages-list'),
 ]
